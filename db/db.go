@@ -3,6 +3,8 @@ package db
 import (
 	"database/sql"
 	"errors"
+	"fmt"
+	"strings"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -11,8 +13,9 @@ import (
 )
 
 var (
-	db  *sql.DB
-	Url = "root@tcp(127.0.0.1:3306)/"
+	db       *sql.DB
+	Url      = "root@tcp(127.0.0.1:3306)/token"
+	database string
 
 	tokenSchema = `CREATE TABLE IF NOT EXISTS tokens (
 id varchar(36) primary key,
@@ -23,16 +26,16 @@ updated integer,
 unique (namespace, name));`
 
 	q = map[string]string{
-		"delete": "DELETE from token.tokens where id = ?",
-		"create": `INSERT into token.tokens (
+		"delete": "DELETE from %s.%s where id = ?",
+		"create": `INSERT into %s.%s (
 				id, namespace, name, created, updated) 
 				values (?, ?, ?, ?, ?)`,
-		"update":                 "UPDATE token.tokens set namespace = ?, name = ?, updated = ? where id = ?",
-		"read":                   "SELECT * from token.tokens where id = ?",
-		"list":                   "SELECT * from token.tokens limit ? offset ?",
-		"searchNamespace":        "SELECT * from token.tokens where namespace = ? limit ? offset ?",
-		"searchName":             "SELECT * from token.tokens where name = ? limit ? offset ?",
-		"searchNamespaceAndName": "SELECT * from token.tokens where namespace = ? and name = ? limit ? offset ?",
+		"update":                 "UPDATE %s.%s set namespace = ?, name = ?, updated = ? where id = ?",
+		"read":                   "SELECT * from %s.%s where id = ?",
+		"list":                   "SELECT * from %s.%s limit ? offset ?",
+		"searchNamespace":        "SELECT * from %s.%s where namespace = ? limit ? offset ?",
+		"searchName":             "SELECT * from %s.%s where name = ? limit ? offset ?",
+		"searchNamespaceAndName": "SELECT * from %s.%s where namespace = ? and name = ? limit ? offset ?",
 	}
 	st = map[string]*sql.Stmt{}
 )
@@ -41,14 +44,26 @@ func Init() {
 	var d *sql.DB
 	var err error
 
-	if d, err = sql.Open("mysql", Url); err != nil {
+	parts := strings.Split(Url, "/")
+	if len(parts) != 2 {
+		panic("Invalid database url")
+	}
+
+	if len(parts[1]) == 0 {
+		panic("Invalid database name")
+	}
+
+	url := parts[0]
+	database = parts[1]
+
+	if d, err = sql.Open("mysql", url+"/"); err != nil {
 		log.Fatal(err)
 	}
-	if _, err := d.Exec("CREATE DATABASE IF NOT EXISTS token"); err != nil {
+	if _, err := d.Exec("CREATE DATABASE IF NOT EXISTS " + database); err != nil {
 		log.Fatal(err)
 	}
 	d.Close()
-	if d, err = sql.Open("mysql", Url+"token"); err != nil {
+	if d, err = sql.Open("mysql", Url); err != nil {
 		log.Fatal(err)
 	}
 	if _, err = d.Exec(tokenSchema); err != nil {
@@ -57,7 +72,7 @@ func Init() {
 	db = d
 
 	for query, statement := range q {
-		prepared, err := db.Prepare(statement)
+		prepared, err := db.Prepare(fmt.Sprintf(statement, database, "tokens"))
 		if err != nil {
 			log.Fatal(err)
 		}
