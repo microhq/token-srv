@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+service Record {
+	rpc Generate(GenerateRequest) returns (GenerateResponse) {}
+	rpc Create(CreateRequest) returns (CreateResponse) {}
+	rpc Read(ReadRequest) returns (ReadResponse) {}
+	rpc Delete(DeleteRequest) returns (DeleteResponse) {}
+	rpc Update(UpdateRequest) returns (UpdateResponse) {}
+	rpc Search(SearchRequest) returns (SearchResponse) {}
+}
+
+message Token {
+	string id = 1;		// uuid
+	string namespace = 2;
+	string name = 3;
+	int64 created = 4;	// unix
+	int64 updated = 5;	// unix
+}
+
+message CreateRequest {
+	Token token = 1;
+}
+
+message CreateResponse {
+}
+
+message DeleteRequest {
+	string id = 1;
+}
+
+message DeleteResponse {
+}
+
+message ReadRequest {
+	string id = 1;
+}
+
+message ReadResponse {
+	Token token = 1;
+}
+
+message UpdateRequest {
+	Token token = 1;
+}
+
+message UpdateResponse {
+}
+
+message SearchRequest {
+	string namespace = 1; 
+	string name = 2; 
+	int64 limit = 3;
+	int64 offset = 4;
+}
+
+message SearchResponse {
+	repeated Token tokens = 1;
+}
+
+message GenerateRequest {
+	string namespace = 1;
+}
+
+message GenerateResponse {
+	Token token = 1;
+}
+
