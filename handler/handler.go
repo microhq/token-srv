@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/micro/go-micro/errors"
-	"github.com/micro/token-srv/db"
-	"github.com/micro/token-srv/proto/record"
+	"github.com/microhq/token-srv/db"
+	"github.com/microhq/token-srv/proto/record"
 	uuid "github.com/streadway/simpleuuid"
 	"golang.org/x/net/context"
 )

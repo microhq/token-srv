@@ -19,7 +19,7 @@ Token server is a microservice to generate and store random tokens. Useful for i
 4. Download and start the service
 
 	```shell
-	go get github.com/micro/token-srv
+	go get github.com/microhq/token-srv
 	token-srv --database_url="root:root@tcp(192.168.99.100:3306)/token"
 	```
 

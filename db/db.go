@@ -9,7 +9,7 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
-	token "github.com/micro/token-srv/proto/record"
+	token "github.com/microhq/token-srv/proto/record"
 )
 
 var (

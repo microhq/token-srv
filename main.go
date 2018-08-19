@@ -5,9 +5,9 @@ import (
 
 	"github.com/micro/cli"
 	"github.com/micro/go-micro"
-	"github.com/micro/token-srv/db"
-	"github.com/micro/token-srv/handler"
-	"github.com/micro/token-srv/proto/record"
+	"github.com/microhq/token-srv/db"
+	"github.com/microhq/token-srv/handler"
+	"github.com/microhq/token-srv/proto/record"
 )
 
 func main() {
