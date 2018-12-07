@@ -43,7 +43,10 @@ Record
 
 ### Record.Generate
 ```shell
-micro query go.micro.srv.token Record.Generate
+micro call go.micro.srv.token Record.Generate
+```
+Response:
+```shell
 {
 	"token": {
 		"created": 1.453406213e+09,
@@ -54,10 +57,12 @@ micro query go.micro.srv.token Record.Generate
 	}
 }
 ```
-
 ### Record.Search 
 ```shell
-micro query go.micro.srv.token Record.Search '{"namespace": "default", "limit": 10}'
+micro call go.micro.srv.token Record.Search '{"namespace": "default", "limit": 10}'
+```
+Response:
+```shell
 {
 	"tokens": [
 		{
